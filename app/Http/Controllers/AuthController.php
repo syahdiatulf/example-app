@@ -45,11 +45,35 @@ class AuthController extends Controller
         return redirect('/home');
     }
 
-    public function logout(Request $request)
+    public function redirectToMicrosoft()
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
+        $query = http_build_query([
+            'client_id' => config('services.microsoft.client_id'),
+            'redirect_uri' => config('services.microsoft.redirect'),
+            'response_type' => 'code',
+            'scope' => 'openid profile email', // Add more scopes if needed
+        ]);
+
+        return redirect('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?' . $query);
+    }
+
+    public function handleMicrosoftCallback()
+    {
+        $response = Http::asForm()->post('https://login.microsoftonline.com/common/oauth2/v2.0/token', [
+            'client_id' => config('services.microsoft.client_id'),
+            'client_secret' => config('services.microsoft.client_secret'),
+            'code' => request('code'),
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => config('services.microsoft.redirect'),
+        ]);
+
+        $user = Http::withToken($response['access_token'])->get('https://graph.microsoft.com/v1.0/me')->json();
+
+        // Your logic to authenticate or register the user
+        // Example: Check if user already exists, create a new user, etc.
+
+        Auth::login($user);
+
+        return redirect('/home'); // Redirect to the home page after login
     }
 }

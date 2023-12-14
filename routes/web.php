@@ -40,3 +40,7 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('auth/login', [AuthController::class, 'redirectToGoogle']);
 
 Route::get('auth/callback', [AuthController::class, 'handleGoogleCallback']);
+
+
+Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft']);
+Route::get('login/microsoft/callback', [AuthController::class, 'handleGooglhhandleMicrosoftCallbackandleMicrosoftCallbackeCallback']);

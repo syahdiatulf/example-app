@@ -44,6 +44,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/auth/login" >{{ __('Google') }}</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/login/microsoft" >{{ __('Microsoft') }}</a>
+                                </li>
                             @endif
 
                             @if (Route::has('register'))
